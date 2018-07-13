@@ -1,0 +1,2 @@
+export const HANDLE_INPUT_FOCUSED = 'header/HANDLE_INPUT_FOCUSED';
+export const HANDLE_INPUT_BLUR = 'header/HANDLE_INPUT_BLUR';
