@@ -1,39 +1,79 @@
 import React from 'react';
-import {HeaderWrapper, Logo, Nav, NavItem, NavSearch, Addition, Button, NavSearchWrapper,SearchInfo,SearchInfoTitle,SearchInfoSwitch,SearchInfoItem,SearchInfoList} from "./style";
+import {
+  HeaderWrapper,
+  Logo,
+  Nav,
+  NavItem,
+  NavSearch,
+  Addition,
+  Button,
+  NavSearchWrapper,
+  SearchInfo,
+  SearchInfoTitle,
+  SearchInfoSwitch,
+  SearchInfoItem,
+  SearchInfoList
+} from "./style";
 import {CSSTransition} from 'react-transition-group';
 import {connect} from 'react-redux';
 import {actionCreators} from './store';
 
 @connect(
+  //toObject只对一层有效
   state => state.get('header').toObject()
   , actionCreators
 )
 export default class Header extends React.Component {
-  getListArea = (show) => {
-    if (show) {
+
+  getListArea = () => {
+    const {focused, mouseIn} = this.props;
+
+    // console.log('focused:', focused, 'mouseIn:', mouseIn);
+    if (focused || mouseIn) {
+      // console.log('this.props:', this.props);
+
+      const {list, page, handleMouseEnter, handleMouseLeave, handleChangePage, totalPage} = this.props
+        , pageList = []
+
+      //toXxx只能转换一层的immutable对象
+      //,故list最为内层的对象并没有转换为普通js对象，需要再次手动转换
+      // , listArr = list.toArray();
+      // console.log('listArr:',listArr);
+
+      if(list.size){
+        for (let i = (page - 1) * 10; i < page * 10; ++i) {
+          let v = list.get(i);
+
+          pageList.push(<SearchInfoItem key={v}>{v}</SearchInfoItem>);
+        }
+      }
+
+      // console.log('pageList:',pageList);
+
       return (
-        <SearchInfo>
+        <SearchInfo
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <SearchInfoTitle>
             热门搜索
-            <SearchInfoSwitch>换一批</SearchInfoSwitch>
+            <SearchInfoSwitch onClick={(ev)=>handleChangePage(page,totalPage,this.$spin)}>
+              <i ref={(x)=>{this.$spin=x}} className='iconfont spin'>&#xe851;</i>
+              换一批
+            </SearchInfoSwitch>
           </SearchInfoTitle>
           <SearchInfoList>
-            <SearchInfoItem>教育</SearchInfoItem>
-            <SearchInfoItem>教育</SearchInfoItem>
-            <SearchInfoItem>教育</SearchInfoItem>
-            <SearchInfoItem>教育</SearchInfoItem>
-            <SearchInfoItem>教育</SearchInfoItem>
-            <SearchInfoItem>教育</SearchInfoItem>
+            {pageList}
           </SearchInfoList>
         </SearchInfo>
-      )
+      );
     } else {
       return null
     }
   };
 
   render() {
-    let {focused, handleInputFocus, handleInputBlur} = this.props;
+    const {focused, handleInputFocus, handleInputBlur, getList, list} = this.props;
 
     return (
       <HeaderWrapper>
@@ -54,15 +94,18 @@ export default class Header extends React.Component {
             >
               <NavSearch
                 className={focused ? 'focused' : ''}
-                onFocus={handleInputFocus}
+                onFocus={() => {
+                  if(!list.size) getList();
+                  handleInputFocus();
+                }}
                 onBlur={handleInputBlur}
               ></NavSearch>
             </CSSTransition>
             <i
               className='iconfont'
-              className={focused ? 'focused iconfont' : 'iconfont'}
+              className={focused ? 'focused iconfont zoom' : 'iconfont zoom'}
             >&#xe614;</i>
-            {this.getListArea(focused)}
+            {this.getListArea()}
           </NavSearchWrapper>
         </Nav>
         <Addition>
