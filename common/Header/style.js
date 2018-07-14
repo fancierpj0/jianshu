@@ -8,9 +8,7 @@ export const HeaderWrapper = styled.div`
 `;
 
 
-export const Logo = styled.a.attrs({
-  href: '/'
-})`
+export const Logo = styled.div`
   position:absolute;
   top:0;
   left:0;
@@ -106,6 +104,7 @@ export const NavSearch = styled.input.attrs({
 
 export const SearchInfo = styled.div`
   position:absolute;
+  background:#fff;
   left:0;
   top:56px;
   width:240px;

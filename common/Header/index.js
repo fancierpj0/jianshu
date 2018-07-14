@@ -17,6 +17,7 @@ import {
 import {CSSTransition} from 'react-transition-group';
 import {connect} from 'react-redux';
 import {actionCreators} from './store';
+import {Link} from 'react-router-dom';
 
 @connect(
   //toObject只对一层有效
@@ -40,7 +41,7 @@ export default class Header extends React.Component {
       // , listArr = list.toArray();
       // console.log('listArr:',listArr);
 
-      if(list.size){
+      if (list.size) {
         for (let i = (page - 1) * 10; i < page * 10; ++i) {
           let v = list.get(i);
 
@@ -57,8 +58,10 @@ export default class Header extends React.Component {
         >
           <SearchInfoTitle>
             热门搜索
-            <SearchInfoSwitch onClick={(ev)=>handleChangePage(page,totalPage,this.$spin)}>
-              <i ref={(x)=>{this.$spin=x}} className='iconfont spin'>&#xe851;</i>
+            <SearchInfoSwitch onClick={(ev) => handleChangePage(page, totalPage, this.$spin)}>
+              <i ref={(x) => {
+                this.$spin = x
+              }} className='iconfont spin'>&#xe851;</i>
               换一批
             </SearchInfoSwitch>
           </SearchInfoTitle>
@@ -77,7 +80,9 @@ export default class Header extends React.Component {
 
     return (
       <HeaderWrapper>
-        <Logo/>
+        <Link to='/'>
+          <Logo/>
+        </Link>
         <Nav>
           <NavItem className='left active'>首页</NavItem>
           <NavItem className='left'>下载APP</NavItem>
@@ -95,7 +100,7 @@ export default class Header extends React.Component {
               <NavSearch
                 className={focused ? 'focused' : ''}
                 onFocus={() => {
-                  if(!list.size) getList();
+                  if (!list.size) getList();
                   handleInputFocus();
                 }}
                 onBlur={handleInputBlur}
