@@ -18,11 +18,18 @@ import {CSSTransition} from 'react-transition-group';
 import {connect} from 'react-redux';
 import {actionCreators} from './store';
 import {Link} from 'react-router-dom';
+import {actionCreators as loginActionCreators} from '../../pages/Login/store';
 
 @connect(
   //toObject只对一层有效
-  state => state.get('header').toObject()
-  , actionCreators
+  state => ({
+    ...state.get('header').toObject()
+    , login: state.getIn(['login', 'login'])
+  })
+  , {
+    ...actionCreators
+    ,logout:loginActionCreators.logout
+  }
 )
 export default class Header extends React.Component {
 
@@ -76,7 +83,7 @@ export default class Header extends React.Component {
   };
 
   render() {
-    const {focused, handleInputFocus, handleInputBlur, getList, list} = this.props;
+    const {focused, handleInputFocus, handleInputBlur, getList, list, login, logout} = this.props;
 
     return (
       <HeaderWrapper>
@@ -86,7 +93,11 @@ export default class Header extends React.Component {
         <Nav>
           <NavItem className='left active'>首页</NavItem>
           <NavItem className='left'>下载APP</NavItem>
-          <NavItem className='right'>登录</NavItem>
+          {
+            login ?
+              <NavItem className='right' onClick={logout}>退出</NavItem>
+              : <Link to='/login'><NavItem className='right'>登录</NavItem></Link>
+          }
           <NavItem className='right'>
             <i className='iconfont'>&#xe636;</i>
           </NavItem>
@@ -114,10 +125,12 @@ export default class Header extends React.Component {
           </NavSearchWrapper>
         </Nav>
         <Addition>
-          <Button className='writting'>
-            <i className='iconfont'>&#xe615;</i>
-            写文章
-          </Button>
+          <Link to='/write'>
+            <Button className='writting'>
+              <i className='iconfont'>&#xe615;</i>
+              写文章
+            </Button>
+          </Link>
           <Button className='reg'>注册</Button>
         </Addition>
       </HeaderWrapper>
