@@ -14,7 +14,7 @@ export default class App extends React.Component {
           <React.Fragment>
             <Header/>
             <Route path='/' exact component={Home}></Route>
-            <Route path='/detail' component={Detail}></Route>
+            <Route path='/detail/:id' component={Detail}></Route>
           </React.Fragment>
         </Router>
       </Provider>
